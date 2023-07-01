@@ -1,7 +1,9 @@
 pipeline {
     agent any
-   
-    stages{
+    tools{
+        maven: 'maven_3_5_0'
+    }
+     stages{
         stage('Build Maven'){
             steps{
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/hmhamsa17/devops-automation.git']]])
@@ -18,7 +20,7 @@ pipeline {
         stage('Push image to Hub'){
             steps{
                 script{
-                   withCredentials([string(credentialsId:'docker-cred', variable:'dockerhubpwd')]) {
+                   withCredentials([string(credentialsId: 'docker-cred', variable: 'dockerhubpwd')]) {
                    sh 'docker login -u hm17 -p ${dockerhubpwd}'
 
                     }
