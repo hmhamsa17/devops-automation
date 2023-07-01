@@ -10,7 +10,7 @@ pipeline {
         stage('Build docker image'){
             steps{
                 script{
-                    sh 'docker build -t javatechie/devops-integration .'
+                    sh 'docker build -t hm17/devops-integration .'
                 }
             }
         }
@@ -21,7 +21,7 @@ pipeline {
                    sh 'docker login -u hm17 -p ${dockerhubpwd}'
 
 }
-                   sh 'docker push javatechie/devops-integration'
+                   sh 'docker push hm17/devops-integration'
                 }
             }
         }
