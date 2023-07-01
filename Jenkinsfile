@@ -21,7 +21,7 @@ pipeline {
             steps{
                 script{
                    withCredentials([string(credentialsId: 'docker-cred', variable: 'dockerhubpwd')]) {
-                   sh 'docker login -u javatechie -p ${dockerhubpwd}'
+                   sh 'docker login -u hm17 -p ${dockerhubpwd}'
 
 }
                    sh 'docker push javatechie/devops-integration'
