@@ -10,21 +10,32 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-	stage('sonarqube-scanner') {
+	 stage('SonarQube analysis') {
     environment {
-        scannerHome = tool 'SonarQubeScanner'
+      SCANNER_HOME = tool 'SonarQubeScanner'
     }
     steps {
-        withSonarQubeEnv('sonarqube-scanner') {
-            sh "${scannerHome}/bin/sonar-scanner"
-        }
-        timeout(time: 10, unit: 'MINUTES') {
-            waitForQualityGate abortPipeline: true
-        }
-    }
+    withSonarQubeEnv(credentialsId: 'sonarqube-scanner', installationName: 'Sonar') {
+         sh '''$SCANNER_HOME/bin/SonarQubeScanner \
+         -Dsonar.projectKey= 3bdfab9588762f606b32c3823474a84b9374f816\
+         -Dsonar.projectName=demo1 \
+         -Dsonar.sources=src/ \
+         -Dsonar.java.binaries=target/classes/ \
+         -Dsonar.exclusions=src/test/java/****/*.java \
+         -Dsonar.java.libraries=/var/lib/jenkins/.m2/**/*.jar \
+         -Dsonar.projectVersion=${BUILD_NUMBER}-${GIT_COMMIT_SHORT}'''
+       }
+     }
 }
-     
-	 stage('Build docker image'){
+   stage('SQuality Gate') {
+     steps {
+       timeout(time: 1, unit: 'MINUTES') {
+       waitForQualityGate abortPipeline: true
+       }
+  }
+}
+}
+ stage('Build docker image'){
             steps{
 	        script{
                     sh 'docker build -t hm17/devops-integration .'
