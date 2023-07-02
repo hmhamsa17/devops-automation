@@ -23,10 +23,9 @@ pipeline {
      		 -D sonar.host.url=http://13.232.19.173:9000/"
     		}
     	 }
-	
-	       Build docker image'){
+	 stage('Build docker image'){
             steps{
-                script{
+	        script{
                     sh 'docker build -t hm17/devops-integration .'
                 }
             }
