@@ -3,9 +3,7 @@ pipeline {
     tools{
         maven 'maven_3_9_3'
     }
-  environment {
-        scannerHome = tool 'SonarQubeScanner'
-    }
+ 
      stages{
         stage('Build Maven'){
             steps{
@@ -14,6 +12,9 @@ pipeline {
             }
         }
 	stage('Sonarqube') {
+		environment {
+        		scannerHome = tool 'SonarQubeScanner'
+  		  }
 		steps {
         		withSonarQubeEnv('sonarqube-scanner') {
 	 		sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=cicd1 \ -Dsonar.java.binaries=. \ -Dsonar.projectKey=cicd1'''
