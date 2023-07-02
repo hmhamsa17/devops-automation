@@ -17,7 +17,9 @@ pipeline {
   		  }
 		steps {
         		withSonarQubeEnv('sonarqube-scanner') {
-	 		sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=cicd1 \ -Dsonar.java.binaries=. \ -Dsonar.projectKey=cicd1'''
+	 		sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName= cicd1 \
+				-Dsonar.java.binaries= . \ 
+				-Dsonar.projectKey= cicd1 '''  
 			}
 		}
 	}
