@@ -13,7 +13,8 @@ pipeline {
 	
      
 	 stage('SonarQube analysis') {
-    		 SCANNER_HOME = tool 'sonarqube';
+		 environment {
+		 SCANNER_HOME = tool 'sonarqube';
 	   	 withSonarQubeEnv('sonarqube') {
       		sh "${scannerHome}/bin/sonar-scanner \
       		-D sonar.login=admin \
@@ -23,6 +24,7 @@ pipeline {
      		 -D sonar.host.url=http://13.232.19.173:9000/"
     		}
     	 }
+	 }
 	stage("Quality Gate") {
   steps {
     timeout(time: 1, unit: 'MINUTES') {
