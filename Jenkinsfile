@@ -10,28 +10,20 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-	
-     
-	 stage('SonarQube analysis') {
-		 environment {
-		 SCANNER_HOME = tool 'sonarqube';
-	   	 withSonarQubeEnv('sonarqube') {
-      		sh "${scannerHome}/bin/sonar-scanner \
-      		-D sonar.login=admin \
-      		-D sonar.password=admin123 \
-      		-D sonar.projectKey=demo1 \
-      		-D sonar.exclusions=vendor/**,resources/**,**/*.java \
-     		 -D sonar.host.url=http://13.232.19.173:9000/"
-    		}
-    	 }
-	 }
-	stage("Quality Gate") {
-  steps {
-    timeout(time: 1, unit: 'MINUTES') {
-        waitForQualityGate abortPipeline: true
+	stage('Sonarqube') {
+    environment {
+        scannerHome = tool 'SonarQubeScanner'
     }
-  }
+    steps {
+        withSonarQubeEnv('sonarqube') {
+            sh "${scannerHome}/bin/sonar-scanner"
+        }
+        timeout(time: 10, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
+        }
+    }
 }
+     
 	 stage('Build docker image'){
             steps{
 	        script{
