@@ -10,7 +10,7 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-	stage('SonarQube analysis') {
+	
      
 	 	stage(' stage('SonarQube analysis') {
     		def scannerHome = tool 'sonarqube';
@@ -23,7 +23,7 @@ pipeline {
      		 -D sonar.host.url=http://192.168.1XX.XX:9000/"
     		}
     	 }
-	}
+	
 	       Build docker image'){
             steps{
                 script{
