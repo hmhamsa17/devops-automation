@@ -11,16 +11,7 @@ pipeline {
             }
         }
          
-    stage('Static code analysis: Sonarqube'){
-         when { expression {  params.action == 'create' } }
-            steps{
-               script{
-                   
-                   def SonarQubecredentialsId = 'sonarqube'
-                   statiCodeAnalysis(SonarQubecredentialsId)
-               }
-            }
-        }
+    
         stage('Build docker image'){
             steps{
                 script{
