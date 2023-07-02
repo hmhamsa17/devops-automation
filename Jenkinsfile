@@ -13,9 +13,9 @@ pipeline {
 	
      
 	 stage('SonarQube analysis') {
-    		def scannerHome = tool 'sonarqube';
+    		 scannerHome = tool 'sonarqube';
 	   	 withSonarQubeEnv('sonarqube') {
-      		sh "${scannerHome}/bin/sonarqube \
+      		sh "${scannerHome}/bin/sonar-scanner \
       		-D sonar.login=admin \
       		-D sonar.password=admin123 \
       		-D sonar.projectKey=demo1 \
@@ -23,16 +23,13 @@ pipeline {
      		 -D sonar.host.url=http://13.232.19.173:9000/"
     		}
     	 }
-	stage('Quality Gates'){
-      
-    	 timeout(time: 1, unit: 'HOURS') {
-    	def qg = waitForQualityGate() 
-    	if (qg.status != 'OK') {
-      	error "Pipeline aborted due to quality gate failure: ${qg.status}"
-   	 }
- 	 }
-      
- 	 }
+	stage("Quality Gate") {
+  steps {
+    timeout(time: 1, unit: 'MINUTES') {
+        waitForQualityGate abortPipeline: true
+    }
+  }
+}
 	 stage('Build docker image'){
             steps{
 	        script{
