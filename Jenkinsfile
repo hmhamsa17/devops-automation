@@ -10,20 +10,16 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-	stage('Sonarqube') {
-    environment {
-        scannerHome = tool 'SonarQubeScanner'
-    }
-    steps {
-        withSonarQubeEnv('sonarqube-scanner') {
-            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=new -Dsonar.projectName=demo1"
-           
+	stage('Static Code Analysis') {
+      environment {
+        SONAR_URL = "http://13.232.19.173/:9000"
+      }
+      steps {
+        withCredentials([string(credentialsId: 'sonarqube-scanner', variable: 'SONAR_AUTH_TOKEN')]) {
+          sh 'cd src && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
         }
-        timeout(time: 10, unit: 'MINUTES') {
-            waitForQualityGate abortPipeline: true
-        }
+      }
     }
-}
    
  stage('Build docker image'){
             steps{
