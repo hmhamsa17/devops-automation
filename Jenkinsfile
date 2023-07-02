@@ -11,19 +11,16 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-	stage('Sonarqube') {
-		environment {
-        		scannerHome = tool 'SonarQubeScanner'
-  		  }
-		steps {
-        		withSonarQubeEnv('sonarqube-scanner') {
-	 		sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName= cicd1 \
-				-Dsonar.java.binaries= . \ 
-				-Dsonar.projectKey= cicd1 '''  
-			}
-		}
-	}
-   
+	 stage('Static Code Analysis') {
+      environment {
+        SONAR_URL = "http://3.110.151.248:9000"
+      }
+      steps {
+        withCredentials([string(credentialsId: 'sonarqube-scanner', variable: 'SONAR_AUTH_TOKEN')]) {
+          sh 'mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
+        }
+      }
+    }
  stage('Build docker image'){
             steps{
 	        script{
