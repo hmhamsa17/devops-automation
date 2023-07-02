@@ -3,6 +3,9 @@ pipeline {
     tools{
         maven 'maven_3_9_3'
     }
+  environment {
+        scannerHome = tool 'SonarQubeScanner'
+    }
      stages{
         stage('Build Maven'){
             steps{
@@ -10,7 +13,13 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-	
+	stage('Sonarqube') {
+		steps {
+        		withSonarQubeEnv('sonarqube-scanner') {
+	 		sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=cicd1 \ -Dsonar.java.binaries=. \ -Dsonar.projectKey=cicd1'''
+			}
+		}
+	}
    
  stage('Build docker image'){
             steps{
